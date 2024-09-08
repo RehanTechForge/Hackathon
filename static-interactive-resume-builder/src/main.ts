@@ -1,38 +1,45 @@
-import { gsap, TimelineMax, TweenMax, Elastic } from "gsap";
+// import { gsap } from "gsap";
 
 // Function to select DOM elements with proper type annotation
-const select = (s: string): HTMLElement | null => {
-  return document.querySelector(s);
+const select = (selector: string): HTMLElement | null => {
+  return document.querySelector(selector);
 };
 
-// Function to generate random numbers between min and max
-function randomBetween(min: number, max: number): number {
-  const number = Math.floor(Math.random() * (max - min + 1) + min);
+// Function to animate sections when they come into view
+const animateSections = () => {
+  // Create a GSAP timeline for animations
+  const tl = gsap.timeline({ defaults: { duration: 1, ease: "power2.out" } });
 
-  // Return the number, ensuring no 0 value is returned
-  return number !== 0 ? number : 0.5;
-}
+  // Animate the profile section
+  tl.from(".profile", {
+    y: 50,
+    opacity: 0,
+    stagger: 0.3,
+  });
 
-// Create a new timeline
-const tl = new TimelineMax();
+  // Animate the experience section
+  tl.from(".experience", {
+    y: 50,
+    opacity: 0,
+    stagger: 0.3,
+    delay: 0.5,
+  });
 
-// Loop to create and add tweens to the timeline
-for (let i = 0; i < 20; i++) {
-  const bubble = select(`.bubble${i}`);
+  // Animate skill and hobbies sections
+  tl.from(".section-wrapper", {
+    x: -50,
+    opacity: 0,
+    stagger: 0.3,
+    delay: 1,
+  });
 
-  if (bubble) {
-    const t = TweenMax.to(bubble, randomBetween(1, 1.5), {
-      x: randomBetween(12, 15) * randomBetween(-1, 1),
-      y: randomBetween(12, 15) * randomBetween(-1, 1),
-      repeat: -1,
-      repeatDelay: randomBetween(0.2, 0.5),
-      yoyo: true,
-      ease: Elastic.easeOut.config(1, 0.5),
-    });
+  // Optional: animate bubbles in the profile section
+  gsap.fromTo(
+    ".bubble0, .bubble1, .bubble2, .bubble3, .bubble4, .bubble5, .bubble6, .bubble7, .bubble8, .bubble9, .bubble10",
+    { scale: 0.5, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 1.5, repeat: -1, yoyo: true }
+  );
+};
 
-    tl.add(t, (i + 1) / 0.6);
-  }
-}
-
-// Start the timeline at the 50th frame
-tl.seek(50);
+// Call the animation function when the page loads
+window.addEventListener("load", animateSections);
